@@ -9,8 +9,6 @@ import SwiftUI
 import PhotosUI
 
 
-
-
 struct EmployeeRegistrationView: View {
     
     
