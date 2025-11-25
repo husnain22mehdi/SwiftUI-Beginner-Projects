@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import FirebaseStorage
 import FirebaseFirestore
+import FirebaseAuth
 
 
 // responsible for handling database
@@ -45,6 +46,23 @@ struct EmployeeService {
     }
     
     func saveEmployee(_ employee: Employee, completion: @escaping (Bool) -> Void){
+        
+//        //create user in firebase auth
+//        let email = "\(employee.userName)@employeehub.com"
+//        let password = employee.password
+//        let uid : UUID
+//        Auth.auth().createUser(withEmail: email, password: password){ result ,error in
+//            if let error = error {
+//                print("Auth signup error: \(error.localizedDescription)")
+//                completion(false)
+//                return
+//            }
+//            
+//            guard let uid = result?.user.uid else {
+//                completion(false)
+//                return
+//            }
+//        }
         
         let storageRef = self.storage.child("employees/\(employee.id).jpg")
         

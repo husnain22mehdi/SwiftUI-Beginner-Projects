@@ -9,6 +9,62 @@ import SwiftUI
 import PhotosUI
 
 
+//enum FieldIsEmpty : Bool {
+//    case name
+//    case userName
+//    case passowrd
+//    case designation
+//}
+
+enum EmployeeAlert : Identifiable{
+    
+    case emptyField(fieldName: String)
+    case invalidUsername
+    case invalidPassword
+    case noImage
+    case success
+    
+    var id : UUID {
+        switch self {
+        case .emptyField(let fieldName):
+            return UUID()
+        case .invalidUsername:
+            return UUID()
+        case .invalidPassword:
+            return UUID()
+        case .noImage:
+            return UUID()
+        case .success:
+            return UUID()
+        }
+    }
+    
+    var message : String {
+        switch self {
+        case .emptyField(let fieldName):
+            return "\(fieldName) can't be empty!"
+        case .invalidUsername:
+            return "Invalid username format!"
+        case .invalidPassword:
+            return "Invalid password format!"
+        case .noImage:
+            return "Profile picture required for sign up!"
+        case .success:
+            return "Sign up is completed!"
+        }
+    }
+    
+    var title : String {
+        switch self {
+        case .success:
+            return "Success"
+        default:
+            return "Registration Failed"
+        }
+    }
+}
+
+
 struct EmployeeRegistrationView: View {
     
     
@@ -19,15 +75,86 @@ struct EmployeeRegistrationView: View {
     @State private var showPicker = false
     @State private var showCamera = false
     @State private var showChoiceSheet = false
+    @State private var emptyField = ""
     
     var employeeService = EmployeeService()
     
     @FocusState.Binding var fieldFocused : Bool
+
+    @State private var showingAlert = false
+    @State private var alertToShow : EmployeeAlert?
     
+//    //enum for custom alert messages
+//    enum AlertMessage : String {
+//        case fieldEmpty = " can't be empty!"
+//        case invalidUserName = "Invalid username format!"
+//        case invalidPassword = "Invalid password format!"
+//        case success = "Sign up is completed!"
+//    }
+    
+    
+    func fieldsNotEmpty() -> Bool {
+        if employee.employeeFullName.isEmpty {
+            emptyField = "Name"
+            return false
+        }
+        else if employee.userName.isEmpty {
+            emptyField = "Username"
+            return false
+        }
+        else if employee.password.isEmpty {
+            emptyField = "Password"
+            return false
+        }
+        else if employee.designation.isEmpty {
+            emptyField = "Designation"
+            return false
+        }
+        else if employee.department.isEmpty {
+            emptyField = "Department"
+            return false
+        }
+        else {
+            return true
+        }
+    }
+    
+    func validUserName() -> Bool {
+        return employee.userName.count > 8
+    }
+    
+    func validPassword() -> Bool {
+        let regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: employee.password)
+    }
+    
+    func validProfileImage() -> Bool {
+        if let img = employee.profileImg{
+            return true
+        }
+        return false
+    }
     
     //checking validations
-    func checkValidations() -> Bool{
-        return false
+    func validateData() -> Bool{
+        if !fieldsNotEmpty() {
+            alertToShow = .emptyField(fieldName: emptyField)
+            return false
+        }
+        if !validUserName() {
+            alertToShow = .invalidUsername
+            return false
+        }
+        if !validPassword() {
+            alertToShow = .invalidPassword
+            return false
+        }
+        if !validProfileImage() {
+            alertToShow = .noImage
+            return false
+        }
+        alertToShow = .success
+        return true
     }
     
     
@@ -98,16 +225,17 @@ struct EmployeeRegistrationView: View {
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button("Save"){
                         
-                        
-                        employeeService.saveEmployee(employee){ success in
-                            if success{
-                                print("Employee Added to firebase")
-                            }
-                            else{
-                                print("Error adding employee to firebase")
+                        if validateData(){
+                            employeeService.saveEmployee(employee){ success in
+                                if success{
+                                    print("Employee Added to firebase")
+                                }
+                                else{
+                                    print("Error adding employee to firebase")
+                                }
                             }
                         }
-                        
+                                              
                     }
                 }
                 ToolbarItemGroup(placement: .keyboard){
@@ -121,6 +249,10 @@ struct EmployeeRegistrationView: View {
             .navigationTitle("Register Employee")
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.systemGray6))
+            .alert(item: $alertToShow){ alert in
+                
+                Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .cancel())
+            }
             //1st vstack
         }
         //navigation stack

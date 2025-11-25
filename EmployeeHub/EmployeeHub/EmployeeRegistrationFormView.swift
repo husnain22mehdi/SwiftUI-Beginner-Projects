@@ -52,6 +52,7 @@ struct EmployeeRegistrationFormView: View {
                 Picker("Select Age", selection: $employee.age){
                     ForEach(18..<100){
                         Text("\($0)")
+                            .tag($0)
                     }
                 }
                 .foregroundStyle(Color(.systemGray2))
