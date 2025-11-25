@@ -64,7 +64,7 @@ struct EmployeeService {
 //            }
 //        }
         
-        let storageRef = self.storage.child("employees/\(employee.id).jpg")
+        let storageRef = self.storage.child("employees/\(employee.id).jpg") 
         
         //convert image to data
         if let imageData = employee.profileImg?.jpegData(compressionQuality: 0.7){
