@@ -77,7 +77,7 @@ struct EmployeeRegistrationView: View {
     @State private var showChoiceSheet = false
     @State private var emptyField = ""
     
-    var employeeService = EmployeeService()
+    var employeeService = EmployeeAuthService()
     
     @FocusState.Binding var fieldFocused : Bool
 
@@ -226,7 +226,7 @@ struct EmployeeRegistrationView: View {
                     Button("Save"){
                         
                         if validateData(){
-                            employeeService.saveEmployee(employee){ success in
+                            employeeService.registerEmployee(employee){ success in
                                 if success{
                                     print("Employee Added to firebase")
                                 }

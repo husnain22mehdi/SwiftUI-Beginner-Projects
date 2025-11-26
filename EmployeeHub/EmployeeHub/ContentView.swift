@@ -17,6 +17,9 @@ struct ContentView: View {
     @State private var goToDashboard = false
     @FocusState var fieldFocused : Bool
     
+    //test
+    let authService = EmployeeAuthService()
+    
     var body: some View {
         NavigationStack {
                 //1st vstack
@@ -73,16 +76,27 @@ struct ContentView: View {
 //                        
                     
                     Button("Login"){
-                        goToDashboard = true
+                        
+                        authService.signInEmployee(username, password){ employee, error in
+                            if let error = error {
+                                print("Login failed: \(error.localizedDescription)")
+                            }
+                            else {
+//                                self.employee = employee
+                                print("Welcome back \(employee!.employeeFullName)!")
+                                goToDashboard = true
+                                EmployeeDashboardView(employee: employee!)
+                            }
+                        }
                     }
                     .frame(width: 100, height: 50)
                     .foregroundStyle(.white)
                     .background(.blue)
                     //                .cornerRadius(10)
                     .clipShape(.capsule)
-                    .navigationDestination(isPresented: $goToDashboard){
-                        EmployeeDashboardView()
-                    }
+//                    .navigationDestination(isPresented: $goToDashboard){
+//                        EmployeeDashboardView(employee: employee)
+//                    }
                     
                     Spacer()
                         .frame(maxHeight: 200)

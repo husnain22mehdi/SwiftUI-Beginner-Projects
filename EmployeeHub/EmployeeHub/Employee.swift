@@ -58,7 +58,29 @@ class Employee : Identifiable, ObservableObject {
 //    }
 //    
     var employeeFullName : String {
-        firstName + (middleName ?? "") + lastName
+        get{
+            return firstName + (middleName ?? "") + lastName
+        }
+        set {
+            firstName = newValue
+            middleName = ""
+            lastName = ""
+        }
     }
 
+    //initializer to create an employee from data returned from firestore
+//    init?( _ dataDictionary : [String : Any]) {
+//        
+//        self.id = dataDictionary["employeeID"] as? String ?? ""
+//        self.employeeFullName = dataDictionary["employeeName"]
+//        self.userName = dataDictionary["userName"] as? String ?? ""
+//        self.password = dataDictionary["password"]
+//        self.age = dataDictionary["age"]
+//        self.designation = dataDictionary["designation"]
+//        self.department = dataDictionary["department"]
+//        self.joiningDate = dataDictionary["joiningDate"]
+//        self.salary = dataDictionary["salary"]
+//        //data contains profile image url, we need the actual image
+//        self.pro
+//    }
 }

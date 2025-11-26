@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct EmployeeDashboardView: View {
+    
+    @ObservedObject var employee : Employee
+    
     var body: some View {
         Text("This is dashboard view")
+        Text("Employee Name : \(employee.employeeFullName)")
+        Text("Employee Salary : \(employee.salary)")
     }
 }
 
-#Preview {
-    EmployeeDashboardView()
-}
