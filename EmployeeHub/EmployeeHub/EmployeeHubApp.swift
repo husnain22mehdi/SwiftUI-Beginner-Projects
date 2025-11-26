@@ -12,6 +12,7 @@ import Firebase
 struct EmployeeHubApp: App {
     
     @StateObject var employee = Employee()
+    @StateObject var authViewModel = EmployeeAuthService()
     
     init(){
         FirebaseApp.configure()
@@ -19,7 +20,7 @@ struct EmployeeHubApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(employee: employee)
+            RootView(employee: employee, authViewModel: authViewModel)
         }
     }
 }

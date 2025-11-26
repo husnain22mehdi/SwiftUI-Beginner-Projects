@@ -13,9 +13,9 @@ import FirebaseAuth
 
 
 // responsible for handling database
-struct EmployeeAuthService {
+class EmployeeAuthService : ObservableObject {
     
-//    @ObservedObject var employee : Employee
+    //    @ObservedObject var employee : Employee
     
     private let db = Firestore.firestore()
     private let storage = Storage.storage().reference()
@@ -91,7 +91,7 @@ struct EmployeeAuthService {
                         }
                         
                         //save employee data to firestore
-                        saveEmployeeDocument(employee, imageURL: imageURL, userID: uid, completion: completion)
+                        self.saveEmployeeDocument(employee, imageURL: imageURL, userID: uid, completion: completion)
                         
                     }
                     
@@ -99,7 +99,7 @@ struct EmployeeAuthService {
             }
             //no image stored
             else{
-                saveEmployeeDocument(employee, imageURL: nil, userID: uid, completion: completion)
+                self.saveEmployeeDocument(employee, imageURL: nil, userID: uid, completion: completion)
             }
         }
     }
@@ -125,7 +125,7 @@ struct EmployeeAuthService {
             
             Task {
                 do{
-                    let employee = try await fetchUserData(user)
+                    let employee = try await self.fetchUserData(user)
                     completion(employee, nil)
                 }catch{
                     completion(nil, error)
@@ -148,7 +148,7 @@ struct EmployeeAuthService {
             
             if fetchedEmployee.exists {
                 dataDictionary = fetchedEmployee.data()
-//                print("employeeID : \(dataDescription["employeeID"])")
+                //                print("employeeID : \(dataDescription["employeeID"])")
             }else {
                 print("Employee doesn't exist!")
             }
@@ -188,7 +188,6 @@ struct EmployeeAuthService {
         
         return employee
     }
-}
     
     //getting image from firestore storage
     func fetchUserImage(from url : String, completion: @escaping (UIImage?) -> Void){
@@ -199,5 +198,20 @@ struct EmployeeAuthService {
             }else{
                 completion(nil)
             }
+        }
+    }
+    
+    //signing user out
+    func signOutEmployee(completion: @escaping (Bool) -> Void){
+        do{
+            try Auth.auth().signOut()
+            completion(true)
+        }catch{
+            print("Auth Sign Out failed!")
+            completion(false)
+        }
     }
 }
+
+
+

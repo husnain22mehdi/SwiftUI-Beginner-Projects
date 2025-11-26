@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct LoginView: View {
     
     @ObservedObject var employee : Employee
     
@@ -17,8 +17,10 @@ struct ContentView: View {
     @State private var goToDashboard = false
     @FocusState var fieldFocused : Bool
     
+    @Binding var userLoggenIn : Bool
+    
     //test
-    let authService = EmployeeAuthService()
+    @ObservedObject var authViewModel : EmployeeAuthService
     
     var body: some View {
         NavigationStack {
@@ -77,15 +79,16 @@ struct ContentView: View {
                     
                     Button("Login"){
                         
-                        authService.signInEmployee(username, password){ employee, error in
+                        authViewModel.signInEmployee(username, password){ employee, error in
                             if let error = error {
                                 print("Login failed: \(error.localizedDescription)")
                             }
                             else {
 //                                self.employee = employee
                                 print("Welcome back \(employee!.employeeFullName)!")
-                                goToDashboard = true
-                                EmployeeDashboardView(employee: employee!)
+//                                goToDashboard = true
+                                userLoggenIn.toggle()
+//                                EmployeeDashboardView(employee: employee!)
                             }
                         }
                     }
@@ -134,6 +137,4 @@ struct ContentView: View {
     }   //body
 }   //struct
 
-#Preview {
-    ContentView(employee: Employee())
-}
+
