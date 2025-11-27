@@ -9,7 +9,8 @@ import SwiftUI
 
 struct EmployeeRegistrationFormView: View {
     
-    @ObservedObject var employee : Employee
+//    @ObservedObject var employee : Employee
+    @ObservedObject var employeeViewModel : EmployeeViewModel
     
     @FocusState.Binding var fieldFocused : Bool
     
@@ -18,20 +19,20 @@ struct EmployeeRegistrationFormView: View {
         Form{
             Section("Name"){
                 HStack(){
-                    TextField("First Name", text: $employee.firstName)
+                    TextField("First Name", text: $employeeViewModel.employee.firstName)
                     //                                .frame(width: 30)
                         .focused($fieldFocused)
                         .textFieldStyle(.roundedBorder)
                         .frame(maxWidth: .infinity)
                     TextField("Middle Name", text: Binding(
-                        get: { employee.middleName ?? "" },
-                        set: { employee.middleName = $0.isEmpty ? nil : $0 }
+                        get: { employeeViewModel.employee.middleName ?? "" },
+                        set: { employeeViewModel.employee.middleName = $0.isEmpty ? nil : $0 }
                     )
                     )
                     .focused($fieldFocused)
                         .textFieldStyle(.roundedBorder)
                         .frame(maxWidth: .infinity)
-                    TextField("Last Name", text: $employee.lastName)
+                    TextField("Last Name", text: $employeeViewModel.employee.lastName)
                         .focused($fieldFocused)
                         .textFieldStyle(.roundedBorder)
                         .frame(maxWidth: .infinity)
@@ -39,17 +40,17 @@ struct EmployeeRegistrationFormView: View {
                 .frame(height: 35)
             }
             Section("UserName"){
-                TextField("username@co", text: $employee.userName)
+                TextField("username@co", text: $employeeViewModel.employee.userName)
                     .focused($fieldFocused)
             }
             Section("Password"){
-                TextField("password", text: $employee.password)
+                TextField("password", text: $employeeViewModel.employee.password)
                     .focused($fieldFocused)
             }
             
             
             Section("Age"){
-                Picker("Select Age", selection: $employee.age){
+                Picker("Select Age", selection: $employeeViewModel.employee.age){
                     ForEach(18..<100){
                         Text("\($0)")
                             .tag($0)
@@ -60,16 +61,16 @@ struct EmployeeRegistrationFormView: View {
             }
             
             Section("Designation"){
-                Picker("Your Designation", selection: $employee.designation){
-                    ForEach(employee.designations, id: \.self){
+                Picker("Your Designation", selection: $employeeViewModel.employee.designation){
+                    ForEach(employeeViewModel.employee.designations, id: \.self){
                         Text("\($0)")
                     }
                 }
                 .foregroundStyle(Color(.systemGray2))
             }
             Section("Department"){
-                Picker("Your Department", selection: $employee.department){
-                    ForEach(employee.departments, id: \.self){
+                Picker("Your Department", selection: $employeeViewModel.employee.department){
+                    ForEach(employeeViewModel.employee.departments, id: \.self){
                         Text("\($0)")
                     }
                 }
@@ -77,12 +78,12 @@ struct EmployeeRegistrationFormView: View {
             }
             
             Section("Joining Date"){
-                DatePicker("Join Date", selection: $employee.joiningDate, displayedComponents: .date)
+                DatePicker("Join Date", selection: $employeeViewModel.employee.joiningDate, displayedComponents: .date)
                     .foregroundStyle(Color(.systemGray2))
             }
             
             Section("Salary"){
-                TextField("PKR/-", value: $employee.salary, format: .currency(code: "PKR"))
+                TextField("PKR/-", value: $employeeViewModel.employee.salary, format: .currency(code: "PKR"))
                     .focused($fieldFocused)
                     .keyboardType(.decimalPad)
 //                            .foregroundStyle(Color(.systemGray2))

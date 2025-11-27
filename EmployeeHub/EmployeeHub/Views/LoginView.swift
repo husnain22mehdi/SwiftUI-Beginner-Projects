@@ -9,8 +9,6 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @ObservedObject var employee : Employee
-    
     @State private var username = ""
     @State private var password = ""
     @State private var showPassword = false
@@ -20,6 +18,7 @@ struct LoginView: View {
     @Binding var userLoggenIn : Bool
     
     //test
+    @ObservedObject var employeeViewModel : EmployeeViewModel
     @ObservedObject var authViewModel : EmployeeAuthService
     
     var body: some View {
@@ -87,6 +86,9 @@ struct LoginView: View {
 //                                self.employee = employee
                                 print("Welcome back \(employee!.employeeFullName)!")
 //                                goToDashboard = true
+                                DispatchQueue.main.async {
+                                    employeeViewModel.employee = employee!
+                                }
                                 userLoggenIn.toggle()
 //                                EmployeeDashboardView(employee: employee!)
                             }
@@ -107,7 +109,7 @@ struct LoginView: View {
                     HStack{
                         Text("Don't have an account?")
                         NavigationLink("Sign Up"){
-                            EmployeeRegistrationView(employee: employee, fieldFocused: $fieldFocused)
+                            EmployeeRegistrationView(employeeViewModel: employeeViewModel, authViewModel: authViewModel, fieldFocused: $fieldFocused)
                         }
                         .foregroundStyle(.blue)
                         .underline()

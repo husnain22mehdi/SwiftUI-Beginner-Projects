@@ -1,5 +1,5 @@
 //
-//  EmployeeService.swift
+//  EmployeeAuthService.swift
 //  EmployeeHub
 //
 //  Created by Husnain on 07/11/2025.
@@ -14,8 +14,6 @@ import FirebaseAuth
 
 // responsible for handling database
 class EmployeeAuthService : ObservableObject {
-    
-    //    @ObservedObject var employee : Employee
     
     private let db = Firestore.firestore()
     private let storage = Storage.storage().reference()
@@ -158,7 +156,7 @@ class EmployeeAuthService : ObservableObject {
         }
         
         //Converting the fetched data into an Employee object to return
-        let employee = Employee()
+        var employee = Employee()
         
         employee.id = uid
         print(employee.id)
@@ -182,8 +180,15 @@ class EmployeeAuthService : ObservableObject {
         let imageURL = dataDictionary?["profileImageURL"] as? String ?? ""
         print(imageURL)
         
-        fetchUserImage(from: imageURL){ image in
-            employee.profileImg = image
+//        let image = await fetchUserImage(from: imageURL){img in
+//            return img
+//        }
+        
+        await fetchUserImage(from: imageURL){ image in
+            print(type(of: image))
+            DispatchQueue.main.async{
+                employee.profileImg = image
+            }
         }
         
         return employee
@@ -191,11 +196,15 @@ class EmployeeAuthService : ObservableObject {
     
     //getting image from firestore storage
     func fetchUserImage(from url : String, completion: @escaping (UIImage?) -> Void){
+        print("in fetch user image")
         let storageRef = Storage.storage().reference(forURL: url)
+        print("storageRef : \(storageRef)")
         storageRef.getData(maxSize: 5 * 1024 * 1024){ data, error in
             if let data = data {
+                print("image data: \(data)")
                 completion(UIImage(data: data))
             }else{
+                print("Error getting the image from firebase storage")
                 completion(nil)
             }
         }

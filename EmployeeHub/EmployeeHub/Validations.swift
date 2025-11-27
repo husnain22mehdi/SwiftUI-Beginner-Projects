@@ -10,7 +10,7 @@ import SwiftUI
 
 struct Validations{
     
-    @ObservedObject var employee : Employee
+//    @ObservedObject var employee : Employee
     
     func isFieldEmpty() -> Bool {
         return false

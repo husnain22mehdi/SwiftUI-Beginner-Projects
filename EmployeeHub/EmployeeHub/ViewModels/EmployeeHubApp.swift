@@ -11,7 +11,7 @@ import Firebase
 @main
 struct EmployeeHubApp: App {
     
-    @StateObject var employee = Employee()
+    @StateObject var employeeViewModel = EmployeeViewModel()
     @StateObject var authViewModel = EmployeeAuthService()
     
     init(){
@@ -20,7 +20,7 @@ struct EmployeeHubApp: App {
     
     var body: some Scene {
         WindowGroup {
-            RootView(employee: employee, authViewModel: authViewModel)
+            RootView(employeeViewModel: employeeViewModel, authViewModel: authViewModel)
         }
     }
 }

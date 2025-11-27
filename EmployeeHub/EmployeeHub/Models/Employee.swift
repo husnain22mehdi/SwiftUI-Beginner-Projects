@@ -8,20 +8,20 @@
 import Foundation
 import SwiftUI
 
-class Employee : Identifiable, ObservableObject {
+struct Employee : Identifiable {
     
-    @Published var id = UUID().uuidString
-    @Published var profileImg : UIImage? = nil
-    @Published var firstName : String = ""
-    @Published var middleName : String? = ""
-    @Published var lastName : String = ""
-    @Published var userName : String = ""
-    @Published var password : String = ""
-    @Published var age : Int = 20
-    @Published var designation : String = ""
-    @Published var department : String = ""
-    @Published var joiningDate : Date = Date.now
-    @Published var salary : Int = 0
+    var id : String = ""
+    var profileImg : UIImage? = nil
+    var firstName : String = ""
+    var middleName : String? = ""
+    var lastName : String = ""
+    var userName : String = ""
+    var password : String = ""
+    var age : Int = 20
+    var designation : String = ""
+    var department : String = ""
+    var joiningDate : Date = Date.now
+    var salary : Int = 0
     
     
     let designations = [
@@ -83,4 +83,6 @@ class Employee : Identifiable, ObservableObject {
 //        //data contains profile image url, we need the actual image
 //        self.pro
 //    }
+    
+    init(){}
 }

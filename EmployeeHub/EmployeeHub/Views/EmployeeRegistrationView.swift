@@ -16,6 +16,7 @@ import PhotosUI
 //    case designation
 //}
 
+//enum for showing registration alerts
 enum EmployeeAlert : Identifiable{
     
     case emptyField(fieldName: String)
@@ -68,7 +69,8 @@ enum EmployeeAlert : Identifiable{
 struct EmployeeRegistrationView: View {
     
     
-    @ObservedObject var employee : Employee
+    @ObservedObject var employeeViewModel : EmployeeViewModel
+    @ObservedObject var authViewModel : EmployeeAuthService
     
     //    @State private var selectedItem : PhotosPickerItem?
     //    @State private var selectedImage : UIImage?
@@ -77,7 +79,7 @@ struct EmployeeRegistrationView: View {
     @State private var showChoiceSheet = false
     @State private var emptyField = ""
     
-    var employeeService = EmployeeAuthService()
+    
     
     @FocusState.Binding var fieldFocused : Bool
 
@@ -94,23 +96,23 @@ struct EmployeeRegistrationView: View {
     
     
     func fieldsNotEmpty() -> Bool {
-        if employee.employeeFullName.isEmpty {
+        if employeeViewModel.employee.employeeFullName.isEmpty {
             emptyField = "Name"
             return false
         }
-        else if employee.userName.isEmpty {
+        else if employeeViewModel.employee.userName.isEmpty {
             emptyField = "Username"
             return false
         }
-        else if employee.password.isEmpty {
+        else if employeeViewModel.employee.password.isEmpty {
             emptyField = "Password"
             return false
         }
-        else if employee.designation.isEmpty {
+        else if employeeViewModel.employee.designation.isEmpty {
             emptyField = "Designation"
             return false
         }
-        else if employee.department.isEmpty {
+        else if employeeViewModel.employee.department.isEmpty {
             emptyField = "Department"
             return false
         }
@@ -120,16 +122,16 @@ struct EmployeeRegistrationView: View {
     }
     
     func validUserName() -> Bool {
-        return employee.userName.count > 8
+        return employeeViewModel.employee.userName.count > 8
     }
     
     func validPassword() -> Bool {
         let regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$"
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: employee.password)
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: employeeViewModel.employee.password)
     }
     
     func validProfileImage() -> Bool {
-        if let img = employee.profileImg{
+        if let img = employeeViewModel.employee.profileImg{
             return true
         }
         return false
@@ -172,7 +174,7 @@ struct EmployeeRegistrationView: View {
                 
                 //2nd vstack
                 VStack{
-                    if let img = employee.profileImg {
+                    if let img = employeeViewModel.employee.profileImg {
                         Image(uiImage: img)
                             .resizable()
                             .scaledToFit()
@@ -204,29 +206,29 @@ struct EmployeeRegistrationView: View {
                     ]
                     
                     
-                    if employee.profileImg != nil {
-                        buttons.insert(.destructive(Text("Delete")) {employee.profileImg = nil}, at: 2)
+                    if employeeViewModel.employee.profileImg != nil {
+                        buttons.insert(.destructive(Text("Delete")) {employeeViewModel.employee.profileImg = nil}, at: 2)
                     }
                     
                     return ActionSheet(title: Text("Select Image"), message: nil, buttons: buttons)
                 }
                 //2nd vstack
                 
-                EmployeeRegistrationFormView(employee: employee, fieldFocused: $fieldFocused)
+                EmployeeRegistrationFormView(employeeViewModel: employeeViewModel, fieldFocused: $fieldFocused)
                 
             }
             .sheet(isPresented: $showPicker){
-                ImagePicker(sourceType: .photoLibrary, selectedImage: $employee.profileImg)
+                ImagePicker(sourceType: .photoLibrary, selectedImage: $employeeViewModel.employee.profileImg)
             }
             .sheet(isPresented: $showCamera){
-                ImagePicker(sourceType: .camera, selectedImage: $employee.profileImg)
+                ImagePicker(sourceType: .camera, selectedImage: $employeeViewModel.employee.profileImg)
             }
             .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button("Save"){
                         
                         if validateData(){
-                            employeeService.registerEmployee(employee){ success in
+                            authViewModel.registerEmployee(employeeViewModel.employee){ success in
                                 if success{
                                     print("Employee Added to firebase")
                                 }
